@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goof
+spec:
+  replicas: 1
+  strategy: {}
+  selector:
+    matchLabels:
+      app: goof
+  template:
+    metadata:
+      labels:
+        app: goof
+    spec:
+      containers:
+      - image: <<DOCKERID>>/goof:dev #Edit with your Docker Hub ID
+        name: goof
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3001
+        - containerPort: 9229
+        resources: {}
+        env: 
+          - name: "DOCKER"
+            value: "1"
+      restartPolicy: Always
+    
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: goof
+spec:
+  ports:
+  - name: "3001"
+    port: 3001
+    targetPort: 3001
+  - name: "9229"
+    port: 9229
+    targetPort: 9229
+  selector:
+    app: goof
+  type: LoadBalancer
